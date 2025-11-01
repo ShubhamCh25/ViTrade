@@ -1,7 +1,5 @@
 # VitTrade – Student Marketplace Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)  
-[![Built With](https://img.shields.io/badge/Built%20With-MERN-Stack-blue.svg)](https://github.com/ShubhamCh25/VitTrade)
 
 ## 🚀 Project Overview  
 VitTrade is a full-stack web application designed to enable students within a campus ecosystem to **buy**, **sell**, and **trade** items in a secure, intuitive, and responsive interface.  
