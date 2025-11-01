@@ -6,7 +6,6 @@ VitTrade is a full-stack web application designed to enable students within a ca
 It supports user authentication, product uploads/listings, cart and order management, and real-time notifications.
 
 ## 🧩 Features  
-## 🧩 Features  
 • User registration, login, and protected routes using JWT authentication.  
 • Product listing with image uploads, item viewing, and trading/bidding functionality.  
 • Shopping cart system with real-time order confirmation flow.  
@@ -24,20 +23,34 @@ It supports user authentication, product uploads/listings, cart and order manage
 **Architecture:** MERN Stack  
 
 ## 📁 Repository Structure  
-/
-├── client/ # React frontend source
-├── server/ # Express backend source
-├── models/ # MongoDB schema definitions
-├── routes/ # API endpoints (Express)
-├── aws/ # AWS Lambda & SNS setup scripts
-├── uploads/ # Temporary local file storage (or S3 references)
-├── .env.example # Environment variables template
-├── README.md # Project overview
+VitTrade/
+├── client/ # React frontend source code
+│ ├── public/ # Public assets and index.html
+│ ├── src/
+│ │ ├── components/ # Reusable UI components (Navbar, ProductCard, etc.)
+│ │ ├── pages/ # Page components (Login, Dashboard, Profile, etc.)
+│ │ ├── context/ # Context API files for theme/user state
+│ │ ├── api/ # Axios instances and API calls
+│ │ └── App.js # Root React component
+│ └── package.json # Frontend dependencies
+│
+├── server/ # Node.js + Express backend
+│ ├── routes/ # API route definitions
+│ ├── models/ # MongoDB schema definitions (User, Product, Order)
+│ ├── controllers/ # Business logic for routes
+│ ├── middleware/ # Authentication and validation middleware
+│ ├── utils/ # Utility functions (token handling, AWS setup)
+│ ├── config/ # Database connection and environment setup
+│ └── server.js # Main backend entry point
+│
+├── aws/ # AWS Lambda & SNS integration scripts
+│ └── notificationHandler.js
+│
+├── .env.example # Sample environment configuration
+├── .gitignore # Files and folders to ignore in version control
+├── package.json # Root dependencies and scripts
+├── README.md # Project documentation
 └── LICENSE # MIT License
-
-bash
-Copy code
-
 ## 🧬 Installation & Setup  
 1. **Clone the repository**  
    ```bash
