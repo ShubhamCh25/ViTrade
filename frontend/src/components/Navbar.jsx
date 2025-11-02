@@ -16,13 +16,13 @@ const Navbar = () => {
   if (!user) return null;
 
   return (
-    <nav className="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
+    <nav className="bg-sky-500 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left Side: Logo */}
           <Link
             to="/dashboard"
-            className="text-xl font-bold text-blue-400 hover:text-blue-300"
+            className="text-xl font-bold text-white hover:text-blue-300"
           >
             ViTrade
           </Link>
