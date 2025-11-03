@@ -20,16 +20,16 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-accent/10 to-background p-4">
-      <div className="bg-card shadow-2xl rounded-3xl p-8 w-full max-w-md border border-border">
+    <div className="flex min-h-screen items-center justify-center bg-white p-6">
+      <div className="backdrop-blur-xl bg-blue-500/20 border border-blue-400/30 shadow-2xl rounded-3xl p-10 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">👋</div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+         
+          <h2 className="text-3xl font-bold text-blue-700 drop-shadow-sm">
             Welcome Back
           </h2>
-          <p className="text-muted-foreground mt-2">Sign in to your account</p>
+          <p className="text-blue-500 mt-2">Sign in to your account</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <input
@@ -37,7 +37,7 @@ const Login = () => {
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-input bg-background text-foreground rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+              className="w-full bg-white/80 placeholder-blue-400 text-blue-800 rounded-xl p-3.5 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
               required
             />
           </div>
@@ -47,33 +47,35 @@ const Login = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-input bg-background text-foreground rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+              className="w-full bg-white/80 placeholder-blue-400 text-blue-800 rounded-xl p-3.5 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-blue-600/90 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg"
           >
             Log In
           </button>
         </form>
-        
-        <div className="mt-6 pt-6 border-t border-border text-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <a href="/signup" className="text-primary hover:underline font-semibold">
+
+        <div className="mt-6 pt-6 border-t border-blue-200 text-center">
+          <p className="text-sm text-blue-600">
+            Don’t have an account?{" "}
+            <a href="/signup" className="text-blue-800 hover:underline font-semibold">
               Sign up
             </a>
           </p>
         </div>
-        
+
         {message && (
-          <div className={`mt-4 text-center text-sm p-3 rounded-lg ${
-            message.includes("✅") 
-              ? "bg-primary/10 text-primary border border-primary/20" 
-              : "bg-destructive/10 text-destructive border border-destructive/20"
-          }`}>
+          <div
+            className={`mt-4 text-center text-sm p-3 rounded-lg ${
+              message.includes("✅")
+                ? "bg-green-400/10 text-green-700 border border-green-300/30"
+                : "bg-red-400/10 text-red-700 border border-red-300/30"
+            }`}
+          >
             {message}
           </div>
         )}

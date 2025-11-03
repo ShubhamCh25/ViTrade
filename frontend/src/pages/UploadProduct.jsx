@@ -52,12 +52,12 @@ const UploadProduct = () => {
       setImages([]);
     } catch (err) {
       console.error(err);
-      setMessage("❌ Upload failed");
+      setMessage(" Upload failed");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-sky-200 shadow-md rounded-lg">
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-blue-200 shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4 text-center ">Upload Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4 ">
         
