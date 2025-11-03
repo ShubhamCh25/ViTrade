@@ -57,9 +57,9 @@ const UploadProduct = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-bold mb-4 text-center">Upload Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-sky-200 shadow-md rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-center ">Upload Product</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 ">
         
         {/* ✅ CATEGORY DROPDOWN */}
         <select
@@ -109,6 +109,7 @@ const UploadProduct = () => {
           className="border p-2 w-full rounded"
           required
         />
+        
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"

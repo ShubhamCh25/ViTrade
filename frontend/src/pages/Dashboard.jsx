@@ -7,7 +7,16 @@ const Dashboard = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [price, setPrice] = useState("");
   const [comment, setComment] = useState("");
-
+  const [category,setCategory]=useState("All");
+  const categories = [
+    "Electronics",
+    "Books & Notes",
+    "Clothing & Accessories",
+    "Hostel Essentials",
+    "Laptops & Peripherals",
+    "Gaming & Entertainment",
+    "Miscellaneous"
+  ];
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) setCurrentUserId(JSON.parse(savedUser).id);
@@ -18,8 +27,16 @@ const Dashboard = () => {
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
 
-  const filteredProducts = products.filter((p) => p.sellerId !== currentUserId);
+  const filteredProducts = products.filter((p) =>{
 
+  if(p.sellerId !== currentUserId && category=='All'){
+    console.log(p.category)
+    return true;
+  }
+  else if(category!='All' && p.category==category){
+    return true;
+  }
+  });
   const openOrderPopup = (product) => {
     setSelectedProduct(product);
     setPrice(product.price);
@@ -47,13 +64,38 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/5 to-background py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-10 text-center">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent mb-2">
-            🛍️ Marketplace
-          </h2>
-          <p className="text-muted-foreground">
-            Discover amazing products from fellow students
-          </p>
+        <div className="mb-10 text-center flex justify-between">
+         
+        <div className="flex justify-center items-center mt-10">
+  <div className="bg-white shadow-md border border-gray-200 rounded-xl p-5 w-[300px] text-center">
+    <h1 className="text-2xl font-semibold text-blue-500">
+      Available Products
+    </h1>
+  </div>
+</div>
+
+          <div>
+            
+          <div className="flex justify-center items-center mt-8">
+  <div className="bg-white shadow-md border border-gray-200 rounded-xl p-4 w-[250px]">
+    <label className="block text-gray-700 font-medium mb-2 text-center">
+      Filter by Category
+    </label>
+    <select
+      onChange={(e) => setCategory(e.target.value)}
+      className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="All">All</option>
+      {categories.map((ele, idx) => (
+        <option key={idx} value={ele}>
+          {ele}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
+        </div>
         </div>
 
         {filteredProducts.length === 0 ? (
@@ -74,9 +116,10 @@ const Dashboard = () => {
             ))}
           </div>
         )}
+     
       </div>
 
-      {/* ✅ Single global popup rendered once */}
+
       {selectedProduct && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50"
@@ -150,7 +193,7 @@ const ProductCard = ({ product }) => {
       setShowPopup(true);
     }
   };
-
+ 
   const submitOrder = async () => {
     try {
       const res = await api.post("/requests", {
@@ -167,7 +210,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="group relative bg-card rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-border hover:border-primary/30 hover:-translate-y-1">
-      {/* Product Image */}
+     
       <div className="relative overflow-hidden">
         {images.length > 0 ? (
           <img
