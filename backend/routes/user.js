@@ -13,11 +13,17 @@ router.get("/profile", auth, async (req, res) => {
     const orders = await Request.find({ buyerId: req.user.id })
       .populate("productId", "name category price images sellerUsername");
 
-    res.json({ user, products, orders });
+    res.json({
+      user,
+      products,
+      orders,
+      notifications: user.notifications || [],
+    });
   } catch (err) {
     console.error("Profile fetch error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 export default router;

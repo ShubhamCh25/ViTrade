@@ -1,12 +1,11 @@
 import multer from "multer";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 import path from "path";
 import { randomUUID } from "crypto";
 
 dotenv.config();
 
-// Initialize S3 client (SDK v3)
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
@@ -15,11 +14,9 @@ const s3 = new S3Client({
   },
 });
 
-// Multer will temporarily hold files in memory
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Upload helper function
 export const uploadToS3 = async (file) => {
   const ext = path.extname(file.originalname);
   const key = `products/${Date.now()}-${randomUUID()}${ext}`;
@@ -29,13 +26,38 @@ export const uploadToS3 = async (file) => {
     Key: key,
     Body: file.buffer,
     ContentType: file.mimetype,
-    ACL: "public-read", // allows browser access
+    ACL: "public-read",
   };
 
   await s3.send(new PutObjectCommand(params));
 
-  // Return public S3 URL
   return `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 };
+
+
+
+export const deleteFromS3 = async (fileUrl) => {
+  const bucket = process.env.S3_BUCKET_NAME;
+
+  // Match both regional and non-regional S3 URLs
+  const regex = new RegExp(`https://${bucket}\\.s3[.-][a-z0-9-]+\\.amazonaws\\.com/(.+)`);
+  const match = fileUrl.match(regex);
+
+  if (!match || !match[1]) {
+    console.error("❌ Invalid S3 URL format:", fileUrl);
+    throw new Error("Invalid S3 file URL");
+  }
+
+  const key = match[1]; // Extracts the part after the domain (e.g. products/...jpg)
+
+  try {
+    await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+    console.log(`✅ Deleted from S3: ${key}`);
+  } catch (err) {
+    console.error("Error deleting from S3:", err);
+    throw err;
+  }
+};
+
 
 export default upload;

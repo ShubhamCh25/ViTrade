@@ -61,26 +61,51 @@ router.get("/incoming", auth, async (req, res) => {
 });
 
 // ✅ Edit existing request
-router.patch("/:id", auth, async (req, res) => {
+router.patch("/:id/status", auth, async (req, res) => {
   try {
-    const { offeredPrice, comment } = req.body;
+    const { status } = req.body; // expected: "accepted" or "rejected"
 
-    const request = await OrderRequest.findOne({
-      _id: req.params.id,
-      buyerId: req.user.id,
-    });
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
 
-    if (!request)
-      return res.status(404).json({ message: "Request not found" });
+    const request = await OrderRequest.findById(req.params.id)
+      .populate("productId", "name price")
+      .populate("buyerId", "_id username");
 
-    request.offeredPrice = offeredPrice ?? request.offeredPrice;
-    request.comment = comment ?? request.comment;
+    if (!request) return res.status(404).json({ message: "Request not found" });
+    if (request.sellerId.toString() !== req.user.id)
+      return res.status(403).json({ message: "Unauthorized" });
 
-    await request.save();
+    const buyer = await User.findById(request.buyerId._id);
+    const seller = await User.findById(req.user.id);
 
-    res.json({ message: "✅ Order request updated", request });
+    if (buyer) {
+      buyer.notifications = buyer.notifications || [];
+      const baseMessage = `Your order for ${request.productId.name} with price ₹${request.offeredPrice}`;
+      const message =
+        status === "accepted"
+          ? `${baseMessage} has been accepted by seller ${seller.username}. Call seller to finalize deal.`
+          : `${baseMessage} has been rejected by seller ${seller.username}.`;
+      buyer.notifications.push({
+        message,
+        read: false,
+        createdAt: new Date(),
+      });
+      await buyer.save();
+    }
+
+    if (status === "accepted") {
+      request.status = "accepted";
+      await request.save();
+      return res.json({ message: "✅ Request accepted and buyer notified" });
+    }
+
+    // ✅ If rejected, delete it entirely
+    await OrderRequest.findByIdAndDelete(req.params.id);
+    return res.json({ message: "✅ Request rejected and removed" });
   } catch (err) {
-    console.error("Error updating request:", err);
+    console.error("Error updating request status:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

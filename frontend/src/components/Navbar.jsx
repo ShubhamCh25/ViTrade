@@ -41,9 +41,13 @@ const Navbar = () => {
             <Link to="/view-requests" className="hover:text-blue-400">
               View Requests
             </Link>
-            <Link to="/profile" className="hover:text-blue-400">
-              Profile
-            </Link>
+            <Link to="/profile" className="relative hover:text-blue-400">
+  Profile
+  {user.notifications?.some((n) => !n.read) && (
+    <span className="absolute -top-2 -right-3 bg-red-600 w-3 h-3 rounded-full"></span>
+  )}
+</Link>
+
           </div>
 
           {/* Right Side: Username + Logout */}
