@@ -49,44 +49,49 @@ router.post("/", auth, async (req, res) => {
 router.get("/incoming", auth, async (req, res) => {
   try {
     const requests = await OrderRequest.find({ sellerId: req.user.id })
-      .populate("productId", "name category price images")
-      .populate("buyerId", "username vitReg phone vitmail")
-      .sort({ offeredPrice: -1 });
+      .populate("buyerId", "username vitReg vitmail phone")
+      .populate("productId", "name images price")
+      .sort({ createdAt: -1 });
 
     res.json(requests);
   } catch (err) {
-    console.error("Error fetching incoming requests:", err);
+    console.error("Error fetching requests:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
+
 // ✅ Edit existing request
+// ✅ Update request status (accept/reject)
 router.patch("/:id/status", auth, async (req, res) => {
   try {
-    const { status } = req.body; // expected: "accepted" or "rejected"
-
-    if (!["accepted", "rejected"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
+    const { status } = req.body;
 
     const request = await OrderRequest.findById(req.params.id)
-      .populate("productId", "name price")
-      .populate("buyerId", "_id username");
+      .populate("buyerId", "username notifications")
+      .populate("productId", "name sellerUsername sellerId price");
 
-    if (!request) return res.status(404).json({ message: "Request not found" });
+    if (!request)
+      return res.status(404).json({ message: "Request not found" });
+
     if (request.sellerId.toString() !== req.user.id)
       return res.status(403).json({ message: "Unauthorized" });
+
+    request.status = status;
+    await request.save();
 
     const buyer = await User.findById(request.buyerId._id);
     const seller = await User.findById(req.user.id);
 
-    if (buyer) {
-      buyer.notifications = buyer.notifications || [];
-      const baseMessage = `Your order for ${request.productId.name} with price ₹${request.offeredPrice}`;
-      const message =
-        status === "accepted"
-          ? `${baseMessage} has been accepted by seller ${seller.username}. Call seller to finalize deal.`
-          : `${baseMessage} has been rejected by seller ${seller.username}.`;
+    if (buyer && seller) {
+      let message = "";
+
+      if (status === "accepted") {
+        message = `Your order for ${request.productId.name} (₹${request.offeredPrice}) has been accepted by ${seller.username}. Call them at ${seller.phone} to finalize the deal.`;
+      } else if (status === "rejected") {
+        message = `Your order for ${request.productId.name} (₹${request.offeredPrice}) has been rejected by the seller ${seller.username}.`;
+      }
+
       buyer.notifications.push({
         message,
         read: false,
@@ -95,19 +100,12 @@ router.patch("/:id/status", auth, async (req, res) => {
       await buyer.save();
     }
 
-    if (status === "accepted") {
-      request.status = "accepted";
-      await request.save();
-      return res.json({ message: "✅ Request accepted and buyer notified" });
-    }
-
-    // ✅ If rejected, delete it entirely
-    await OrderRequest.findByIdAndDelete(req.params.id);
-    return res.json({ message: "✅ Request rejected and removed" });
+    res.json({ message: `Request ${status} successfully.` });
   } catch (err) {
     console.error("Error updating request status:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 export default router;

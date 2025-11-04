@@ -75,7 +75,7 @@ const Profile = () => {
     <div className="flex min-h-screen justify-center items-center bg-gray-50 w-full p-10">
       <div className="max-w-7xl w-full flex flex-col justify-evenly items-center ">
         {/* Profile Card */}
-        <div className="flex w-[90%] p-10 items-start bg-gray-200 ">
+        <div className="flex w-[90%] p-10 items-start bg-gray-200 rounded-xl">
           <div className="w-1/3">
             <h3 className="text-2xl font-semibold text-gray-800 capitalize text-left">
               Your Profile
@@ -212,7 +212,7 @@ const Profile = () => {
         </div>
 
         {/* Orders Section */}
-        <div className="flex w-[90%] p-10 items-start bg-gray-200 ">
+        <div className="flex w-[90%] p-10 items-start bg-gray-200 rounded-xl">
           <div className="w-1/3">
             <h3 className="text-2xl font-bold mb-4 text-gray-800 text-left capitalize">
               Your Orders
